@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>꼬마 뼈 탐정대</title>
+<link rel="stylesheet" href="fonts/jua.css">
+<style>
+:root{
+  --soil:#3B2A20; --amber:#E9A21F; --amber-soft:#FFF1D2; --teal:#1F7A6E; --teal-soft:#E1F2EE;
+  --coral:#D2583F; --coral-soft:#FBE4DD; --bone:#F3EBDD; --paper:#FFFBF3; --ink:#2E2A26; --mute:#7A7068; --line:#E8DFCF;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Jua','Malgun Gothic',sans-serif;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh}
+b{font-weight:400;color:var(--soil);background:linear-gradient(transparent 62%,#FFE3A3 62%)}
+.present b,.pbox b{background:none}
+h1,h2,h3,.jua{font-family:'Jua','Malgun Gothic',sans-serif;font-weight:400;margin:0}
+button{font-family:'Jua','Malgun Gothic',sans-serif;cursor:pointer;border:0}
+.wrap{max-width:1000px;margin:0 auto;padding:16px 16px 60px}
+.screen{display:none;animation:fade .35s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.topbar .back{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 14px;font-size:17px;color:var(--soil)}
+.topbar .team{margin-left:auto;background:var(--amber-soft);color:var(--soil);border-radius:999px;padding:6px 14px;font-family:'Jua';font-size:16px}
+.btn{background:var(--teal);color:#fff;border-radius:16px;padding:14px 22px;font-size:20px;box-shadow:0 4px 0 #145a51;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #145a51}
+.btn.amber{background:var(--amber);box-shadow:0 4px 0 #b97c0d;color:#3b2a20}
+.btn.coral{background:var(--coral);box-shadow:0 4px 0 #9e3f2b}
+.btn.ghost{background:#fff;color:var(--soil);border:2px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 2px 0 var(--line),0 8px 24px rgba(59,42,32,.06)}
+.bubble{position:relative;background:#fff;border:3px solid var(--soil);border-radius:22px;padding:14px 18px;font-size:19px;line-height:1.5}
+.row{display:flex;gap:14px;align-items:center}
+.center{text-align:center}
+.muted{color:var(--mute)}
+.pill{display:inline-block;border-radius:999px;padding:4px 12px;font-family:'Jua';font-size:15px}
+
+/* home */
+.hero{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center;margin:10px 0 22px}
+.hero h1{font-size:52px;color:var(--soil);line-height:1.05}
+.hero p{font-size:19px;margin:10px 0 0;color:var(--mute)}
+.teamin{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.teamin input{flex:1;min-width:180px;font-size:20px;padding:12px 16px;border-radius:14px;border:2px solid var(--line);font-family:'Jua'}
+.missions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mcard{position:relative;background:#fff;border-radius:24px;padding:18px;text-align:left;box-shadow:0 4px 0 var(--line);border:2px solid transparent;transition:transform .12s}
+.mcard:hover{transform:translateY(-3px)}
+.mcard .num{font-family:'Jua';font-size:15px;color:#fff;border-radius:999px;padding:3px 12px;display:inline-block}
+.mcard h3{font-size:25px;margin:10px 0 6px;color:var(--soil)}
+.mcard p{margin:0;font-size:16px;color:var(--mute);line-height:1.45}
+.mcard .ico{height:90px;display:flex;align-items:center;justify-content:center;margin:6px 0}
+.stamp{position:absolute;top:12px;right:12px;width:74px;height:74px;border-radius:50%;border:4px solid var(--coral);color:var(--coral);font-family:'Jua';font-size:17px;display:none;align-items:center;justify-content:center;transform:rotate(-14deg);background:rgba(255,255,255,.85);line-height:1.1;text-align:center}
+.mcard.done .stamp{display:flex;animation:stamp .4s ease}
+@keyframes stamp{0%{transform:scale(2.2) rotate(-14deg);opacity:0}100%{transform:scale(1) rotate(-14deg);opacity:1}}
+.foot{margin-top:28px;text-align:center}
+.foot button{background:none;color:var(--mute);font-family:'Jua';font-size:14px;text-decoration:underline}
+
+/* mission 1 */
+.m1grid{display:grid;grid-template-columns:1fr 290px;gap:16px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 16px;font-size:19px;color:var(--soil)}
+.tab.on{background:var(--soil);color:#fff;border-color:var(--soil)}
+.stage{position:relative;width:100%;aspect-ratio:900/510;background:#fff;border-radius:20px;overflow:hidden;touch-action:none;box-shadow:0 2px 0 var(--line);user-select:none;-webkit-user-select:none}
+.stage .base{position:absolute;inset:0;width:100%;height:100%;filter:blur(7px) saturate(.6);opacity:.75}
+.stage .marks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lens{position:absolute;width:150px;height:150px;border-radius:50%;overflow:hidden;border:7px solid var(--soil);box-shadow:0 0 0 4px #fff,0 10px 20px rgba(0,0,0,.25);pointer-events:none;display:none;background:#fff}
+.lens svg{position:absolute;left:0;top:0}
+.lens::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:inset 8px 10px 18px rgba(255,255,255,.7)}
+.handle{position:absolute;width:18px;height:70px;background:var(--soil);border-radius:9px;transform-origin:top center;pointer-events:none;display:none}
+.stagehint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(59,42,32,.85);color:#fff;border-radius:999px;padding:8px 16px;font-size:16px;pointer-events:none;white-space:nowrap}
+.clues h3{font-size:22px;color:var(--soil);margin-bottom:8px}
+.clue{display:flex;gap:10px;align-items:center;background:var(--paper);border:2px dashed var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;font-size:16px;min-height:52px}
+.clue .dot{flex:none;width:30px;height:30px;border-radius:50%;background:var(--line);color:#fff;font-family:'Jua';display:flex;align-items:center;justify-content:center}
+.clue.found{border-style:solid;border-color:var(--amber);background:var(--amber-soft);animation:pop .35s}
+.clue.found .dot{background:var(--amber)}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:none}}
+.toast{position:fixed;left:50%;top:22px;transform:translateX(-50%) translateY(-120px);background:var(--soil);color:#fff;border-radius:18px;padding:12px 22px;font-family:"Jua";font-size:22px;z-index:50;transition:transform .3s;white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.quiz{margin-top:16px}
+.q{margin:14px 0}
+.q .qt{font-family:'Jua';font-size:21px;color:var(--soil);margin-bottom:8px}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{background:#fff;border:3px solid var(--line);border-radius:16px;padding:12px 18px;font-size:18px;color:var(--ink);font-family:'Jua';font-weight:400}
+.opt.sel{border-color:var(--teal);background:var(--teal-soft)}
+.opt.wrong{border-color:var(--coral);background:var(--coral-soft)}
+.fb{margin-top:8px;font-size:17px;line-height:1.5;display:none;padding:10px 14px;border-radius:14px}
+.fb.on{display:block}
+.fb.good{background:var(--teal-soft);color:#145a51}
+.fb.bad{background:var(--coral-soft);color:#8a3524}
+
+/* mission 2 */
+.story{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:center}
+.story .art{background:#fff;border-radius:22px;padding:10px;box-shadow:0 2px 0 var(--line)}
+.story h2{font-size:30px;color:var(--soil);margin-bottom:10px}
+.story .txt{font-size:19px;line-height:1.6}
+.year{display:inline-block;background:var(--soil);color:#fff;font-family:'Jua';border-radius:10px;padding:3px 12px;margin-bottom:10px}
+.spot{cursor:pointer}
+.spot circle.ring{animation:pulse 1.4s infinite}
+@keyframes pulse{0%{r:16;opacity:1}100%{r:34;opacity:0}}
+.ox{display:grid;gap:10px}
+.oxrow{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px;font-size:18px}
+.oxrow span{flex:1}
+.oxb{width:52px;height:52px;border-radius:14px;font-size:26px;background:var(--paper);border:2px solid var(--line);color:var(--soil)}
+.oxb.sel.o{background:var(--teal);color:#fff;border-color:var(--teal)}
+.oxb.sel.x{background:var(--coral);color:#fff;border-color:var(--coral)}
+.stepdots{display:flex;gap:6px;justify-content:center;margin:16px 0 4px}
+.stepdots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.stepdots i.on{background:var(--amber);width:26px;border-radius:6px}
+
+/* mission 3 */
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.case{background:#F5E9D3;border-radius:8px 22px 22px 22px;padding:18px;text-align:left;position:relative;box-shadow:0 4px 0 #E2D2B4;border:0}
+.case::before{content:'';position:absolute;left:0;top:-14px;width:110px;height:18px;background:#F5E9D3;border-radius:10px 10px 0 0}
+.case h3{font-size:24px;color:var(--soil);margin:4px 0}
+.case p{margin:6px 0 0;color:var(--mute);font-size:16px}
+.case .st{font-family:'Jua';font-size:15px;color:var(--coral)}
+.board{display:grid;grid-template-columns:1fr 330px;gap:16px}
+.evid{background:#fff;border-radius:22px;padding:14px;box-shadow:0 2px 0 var(--line)}
+.evid .lab{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.evid .lab h3{font-size:24px;color:var(--soil)}
+.evid svg{width:100%;height:auto;background:#FBF7EF;border-radius:16px}
+.size{font-family:'Jua';background:var(--amber-soft);color:var(--soil);border-radius:999px;padding:4px 12px;font-size:16px}
+.hint{margin-top:8px;font-size:17px;color:var(--mute)}
+.thumbs{display:flex;gap:8px;margin-top:10px}
+.thumb{flex:1;border-radius:12px;background:#FBF7EF;border:2px solid var(--line);aspect-ratio:300/220;overflow:hidden;position:relative;padding:0}
+.thumb svg{width:100%;height:100%}
+.thumb.locked{background:repeating-linear-gradient(45deg,#f3ece0,#f3ece0 8px,#ece3d3 8px,#ece3d3 16px);display:flex;align-items:center;justify-content:center;font-family:'Jua';color:var(--mute);font-size:22px}
+.thumb.cur{border-color:var(--amber)}
+.guess label{font-family:'Jua';font-size:19px;color:var(--soil);display:block;margin:4px 0 6px}
+.guess textarea,.report textarea,.guess input{width:100%;font-size:18px;font-family:'Jua';font-weight:400;border:2px solid var(--line);border-radius:14px;padding:10px 12px;resize:none;background:var(--paper)}
+.slider{margin:6px 0 4px}
+.slider input{width:100%;accent-color:var(--amber);height:34px}
+.confv{font-family:'Jua';font-size:30px;color:var(--amber);text-align:center}
+.conflab{display:flex;justify-content:space-between;font-size:14px;color:var(--mute)}
+.log{margin-top:12px;font-size:15px}
+.log div{padding:6px 0;border-top:1px dashed var(--line)}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rbox{background:#fff;border-radius:18px;padding:14px;box-shadow:0 2px 0 var(--line)}
+.rbox h3{font-size:22px;margin-bottom:4px}
+.rbox p{margin:0 0 8px;color:var(--mute);font-size:15px}
+.present{background:var(--soil);color:#fff;border-radius:26px;padding:28px}
+.present h2{font-size:40px;color:var(--amber)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.pbox{background:rgba(255,255,255,.08);border-radius:18px;padding:14px 16px}
+.pbox b{font-family:'Jua';font-weight:400;font-size:20px;color:var(--amber);display:block;margin-bottom:4px}
+.pbox div{font-size:21px;line-height:1.45;white-space:pre-wrap}
+.reveal{text-align:center}
+.reveal h2{font-size:54px;color:var(--coral)}
+.revcards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.revcards svg{width:100%;background:#FBF7EF;border-radius:12px}
+.chart{background:#fff;border-radius:20px;padding:14px;box-shadow:0 2px 0 var(--line)}
+.confetti{position:fixed;top:-20px;font-size:26px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;text-align:center}.hero .kid{max-width:180px;margin:0 auto}
+  .hero h1{font-size:40px}.teamin{justify-content:center}
+  .missions,.cases{grid-template-columns:1fr}
+  .m1grid,.board,.story,.report,.pgrid{grid-template-columns:1fr}
+  .revcards{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+
+<!-- HOME -->
+<section class="screen on" id="home">
+  <div class="hero">
+    <div class="kid" id="kidHome"></div>
+    <div>
+      <div class="pill" style="background:var(--amber-soft);color:var(--soil)">와골와골 발굴단 2부</div>
+      <h1>꼬마 뼈 탐정대</h1>
+      <p>뼈만 남은 동물의 모습과 생활을 우리는 어디까지 알 수 있을까?<br>돋보기를 들고 사건을 해결해 봅시다!</p>
+      <div class="teamin">
+        <input id="teamName" maxlength="14" placeholder="우리 모둠 탐정단 이름">
+        <button class="btn amber" id="saveTeam">탐정단 등록</button>
+      </div>
+    </div>
+  </div>
+  <div class="missions">
+    <button class="mcard" data-go="m1" id="mc1"><div class="stamp">해결<br>완료</div>
+      <span class="num" style="background:var(--amber)">미션 ①</span>
+      <div class="ico" id="ico1"></div>
+      <h3>돋보기 두개골 수사</h3><p>흐릿한 두 두개골을 돋보기로 샅샅이! 숨은 단서 6개를 찾아 무엇을 먹었는지 밝혀요.</p></button>
+    <button class="mcard" data-go="m2" id="mc2"><div class="stamp">해결<br>완료</div>
+      <span class="num" style="background:var(--coral)">미션 ②</span>
+      <div class="ico" id="ico2"></div>
+      <h3>뒤집힌 사건 기록</h3><p>과학자도 틀릴 때가 있어요! 뾰족한 뼈 하나의 진짜 자리를 추리해요.</p></button>
+    <button class="mcard" data-go="m3" id="mc3"><div class="stamp">해결<br>완료</div>
+      <span class="num" style="background:var(--teal)">미션 ③</span>
+      <div class="ico" id="ico3"></div>
+      <h3>미스터리 동물 사건 파일</h3><p>증거가 하나씩 열려요. 매번 추리와 확신도를 기록하고 정체를 밝혀요.</p></button>
+  </div>
+  <div class="foot"><button id="resetAll">처음부터 다시 하기 (선생님용)</button></div>
+</section>
+
+<!-- MISSION 1 -->
+<section class="screen" id="m1">
+  <div class="topbar"><button class="back" data-go="home">← 탐정 본부</button><h2 style="font-size:26px;color:var(--soil)">미션 ① 돋보기 두개골 수사</h2><span class="team teamTag"></span></div>
+  <div class="m1grid">
+    <div>
+      <div class="tabs"><button class="tab on" data-skull="A">두개골 A</button><button class="tab" data-skull="B">두개골 B</button></div>
+      <div class="stage" id="stage">
+        <svg class="base" id="baseSvg" viewBox="0 0 900 510"></svg>
+        <svg class="marks" id="marks" viewBox="0 0 900 510"></svg>
+        <div class="handle" id="handle"></div>
+        <div class="lens" id="lens"></div>
+        <div class="stagehint" id="stagehint">손가락(마우스)으로 돋보기를 움직여 보세요</div>
+      </div>
+      <div class="row" style="margin-top:10px;justify-content:space-between">
+        <span class="muted" style="font-size:16px">단서 위에 돋보기를 잠깐 멈추면 기록돼요.</span>
+        <button class="btn ghost" id="hintBtn" style="font-size:16px;padding:8px 14px">힌트 보기</button>
+      </div>
+    </div>
+    <div class="clues card">
+      <h3>탐정 수첩</h3>
+      <div class="muted" style="font-size:15px;margin-bottom:8px" id="clueCount">찾은 단서 0 / 6</div>
+      <div id="clueList"></div>
+    </div>
+  </div>
+  <div class="quiz card" id="quiz1" style="display:none">
+    <div class="row"><div id="kidQuiz" style="width:90px;flex:none"></div><div class="bubble">단서를 모두 모았어요! 이제 추리할 시간이에요.</div></div>
+    <div id="quizBody"></div>
+  </div>
+</section>
+
+<!-- MISSION 2 -->
+<section class="screen" id="m2">
+  <div class="topbar"><button class="back" data-go="home">← 탐정 본부</button><h2 style="font-size:26px;color:var(--soil)">미션 ② 뒤집힌 사건 기록</h2><span class="team teamTag"></span></div>
+  <div id="m2body"></div>
+  <div class="stepdots" id="m2dots"></div>
+</section>
+
+<!-- MISSION 3 : case list -->
+<section class="screen" id="m3">
+  <div class="topbar"><button class="back" data-go="home">← 탐정 본부</button><h2 style="font-size:26px;color:var(--soil)">미션 ③ 미스터리 동물 사건 파일</h2><span class="team teamTag"></span></div>
+  <div class="row" style="margin-bottom:22px"><div id="kidCase" style="width:90px;flex:none"></div><div class="bubble">선생님이 알려 준 사건 파일을 열어 보세요. 증거는 한 장씩 열려요. 증거가 열릴 때마다 <b>추리</b>와 <b>확신도</b>를 꼭 기록해야 다음 증거를 볼 수 있어요!</div></div>
+  <div class="cases" id="caseList"></div>
+</section>
+
+<!-- MISSION 3 : board -->
+<section class="screen" id="m3b">
+  <div class="topbar"><button class="back" data-go="m3">← 사건 파일 목록</button><h2 style="font-size:26px;color:var(--soil)" id="caseTitle"></h2><span class="team teamTag"></span></div>
+  <div class="board">
+    <div class="evid">
+      <div class="lab"><h3 id="evTitle"></h3><span class="size" id="evSize"></span></div>
+      <div id="evArt"></div>
+      <div class="hint" id="evHint"></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+    <div class="card guess">
+      <label id="guessLab">지금 우리 추리: 이 동물은?</label>
+      <textarea id="guessIn" rows="2" placeholder="예) 작은 새일 것 같다. 뼈가 가늘어서."></textarea>
+      <label style="margin-top:12px">확신도</label>
+      <div class="confv" id="confV">50%</div>
+      <div class="slider"><input type="range" id="confIn" min="0" max="100" step="10" value="50"></div>
+      <div class="conflab"><span>잘 모르겠다</span><span>반반</span><span>꽤 확실하다</span></div>
+      <button class="btn amber" id="nextEv" style="width:100%;margin-top:14px" disabled>기록하고 다음 증거 열기</button>
+      <div class="log" id="guessLog"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION 3 : report -->
+<section class="screen" id="m3r">
+  <div class="topbar"><button class="back" data-go="m3b">← 증거판</button><h2 style="font-size:26px;color:var(--soil)">우리 모둠 복원 보고서</h2><span class="team teamTag"></span></div>
+  <div class="report">
+    <div class="rbox"><h3 style="color:var(--teal)">주장</h3><p>이 동물은 ~했을 것이다.</p><textarea id="rClaim" rows="3"></textarea></div>
+    <div class="rbox"><h3 style="color:var(--teal)">증거</h3><p>어떤 뼈의 어떤 특징을 보았나?</p><textarea id="rEvid" rows="3"></textarea></div>
+    <div class="rbox"><h3 style="color:var(--teal)">근거</h3><p>그 특징이 왜 그런 생활을 뜻하나?</p><textarea id="rReason" rows="3"></textarea></div>
+    <div class="rbox"><h3 style="color:var(--coral)">확신도</h3><p>가장 자신 있는 부분 / 가장 자신 없는 부분</p><textarea id="rSure" rows="3" placeholder="자신 있는 부분: &#10;자신 없는 부분: "></textarea></div>
+  </div>
+  <div class="rbox" style="margin-top:14px"><h3 style="color:var(--amber)">더 생각해 보기</h3><p>뼈 카드를 한 장 더 받을 수 있다면 어떤 뼈를 받고 싶나요? 왜?</p><textarea id="rMore" rows="2"></textarea></div>
+  <div class="center" style="margin-top:18px"><button class="btn" id="toPresent">보고서 완성! 발표 화면 보기</button></div>
+</section>
+
+<!-- MISSION 3 : present -->
+<section class="screen" id="m3p">
+  <div class="topbar"><button class="back" data-go="m3r">← 보고서 고치기</button><span class="team teamTag"></span></div>
+  <div class="present">
+    <div class="pill" style="background:var(--amber);color:var(--soil)" id="pCase"></div>
+    <h2 id="pTeam"></h2>
+    <div class="pgrid">
+      <div class="pbox"><b>주장</b><div id="pClaim"></div></div>
+      <div class="pbox"><b>증거</b><div id="pEvid"></div></div>
+      <div class="pbox"><b>근거</b><div id="pReason"></div></div>
+      <div class="pbox"><b>확신도</b><div id="pSure"></div></div>
+    </div>
+  </div>
+  <div class="center" style="margin-top:18px">
+    <p class="muted" style="font-size:17px">발표가 끝나면 선생님과 함께 눌러 주세요.</p>
+    <button class="btn coral" id="toReveal" style="font-size:24px">정답 공개!</button>
+  </div>
+</section>
+
+<!-- MISSION 3 : reveal -->
+<section class="screen" id="m3v">
+  <div class="topbar"><button class="back" data-go="m3">← 사건 파일 목록</button><span class="team teamTag"></span></div>
+  <div class="reveal">
+    <div class="muted jua" style="font-size:22px">이 동물의 정체는…</div>
+    <h2 id="vName"></h2>
+    <div class="revcards" id="vCards"></div>
+    <div class="card" style="text-align:left;font-size:19px;line-height:1.6" id="vExplain"></div>
+    <div class="chart" style="margin-top:14px;text-align:left">
+      <h3 style="font-size:22px;color:var(--soil);margin-bottom:4px">우리 모둠 추리의 변화</h3>
+      <div class="muted" style="font-size:15px">증거가 늘어날수록 확신도는 어떻게 바뀌었나요?</div>
+      <div id="vChart"></div>
+    </div>
+    <div class="bubble" style="margin-top:16px;text-align:left" id="vKid"></div>
+    <div style="margin-top:18px"><button class="btn" data-go="home">탐정 본부로</button></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ---------- state ---------- */
+const KEY = 'boneDetective.v1';
+let S = load();
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || fresh(); }catch(e){ return fresh(); } }
+function fresh(){ return { team:'', done:{m1:false,m2:false,m3:false}, cases:{} }; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1600); }
+function go(id){
+  $$('.screen').forEach(s=>s.classList.toggle('on', s.id===id));
+  window.scrollTo(0,0);
+  if(id==='home') renderHome();
+  if(id==='m1') initM1();
+  if(id==='m2') initM2();
+  if(id==='m3') renderCases();
+}
+document.addEventListener('click', e=>{ const g=e.target.closest('[data-go]'); if(g) go(g.dataset.go); });
+function esc(s){ return String(s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function confetti(){ const em=['🦴','✨','🔍','⭐','🦴']; for(let i=0;i<34;i++){ const d=document.createElement('div'); d.className='confetti'; d.textContent=em[i%em.length]; d.style.left=Math.random()*100+'vw'; d.style.animationDuration=(1.8+Math.random()*1.6)+'s'; d.style.animationDelay=(Math.random()*.4)+'s'; document.body.appendChild(d); setTimeout(()=>d.remove(),4200); } }
+
+/* ---------- kid detective ---------- */
+function kidSVG(){ return `<svg viewBox="0 0 220 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <ellipse cx="110" cy="228" rx="70" ry="9" fill="#000" opacity=".08"/>
+  <path d="M52,226 C52,178 76,152 110,152 C144,152 168,178 168,226 Z" fill="#B7834F" stroke="#3B2A20" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M110,156 L96,196 L110,226 L124,196 Z" fill="#8C5E35" stroke="#3B2A20" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="92" cy="196" r="4" fill="#3B2A20"/><circle cx="128" cy="196" r="4" fill="#3B2A20"/>
+  <circle cx="110" cy="100" r="56" fill="#FFE1C4" stroke="#3B2A20" stroke-width="5"/>
+  <path d="M54,92 C54,50 80,30 110,30 C140,30 166,50 166,92 C150,80 70,80 54,92 Z" fill="#9A6A3E" stroke="#3B2A20" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M60,86 C90,74 130,74 160,86" fill="none" stroke="#3B2A20" stroke-width="4"/>
+  <path d="M80,40 L90,78 M110,32 L110,76 M140,40 L130,78" stroke="#7A4F2A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M150,82 C176,80 188,92 186,100 C172,96 160,94 150,92 Z" fill="#9A6A3E" stroke="#3B2A20" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="110" cy="28" r="7" fill="#E9A21F" stroke="#3B2A20" stroke-width="4"/>
+  <circle cx="86" cy="108" r="9" fill="#3B2A20"/><circle cx="89" cy="104" r="3" fill="#fff"/>
+  <ellipse cx="76" cy="126" rx="10" ry="6" fill="#F7A7A0" opacity=".7"/><ellipse cx="146" cy="126" rx="10" ry="6" fill="#F7A7A0" opacity=".7"/>
+  <path d="M100,132 C106,140 116,140 122,132" fill="none" stroke="#3B2A20" stroke-width="4" stroke-linecap="round"/>
+  <line x1="162" y1="140" x2="196" y2="186" stroke="#3B2A20" stroke-width="13" stroke-linecap="round"/>
+  <line x1="162" y1="140" x2="196" y2="186" stroke="#8C5E35" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="136" cy="106" r="30" fill="#DDF1FA" fill-opacity=".85" stroke="#3B2A20" stroke-width="7"/>
+  <circle cx="136" cy="108" r="15" fill="#3B2A20"/><circle cx="141" cy="102" r="5" fill="#fff"/>
+  <path d="M120,92 C124,86 130,84 136,84" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="166" cy="150" r="10" fill="#FFE1C4" stroke="#3B2A20" stroke-width="4"/>
+</svg>`; }
+
+/* ---------- skull drawings (mission 1) ---------- */
+const ink='#3B2A20', bone='#F3EBDD', tooth='#FFFDF8';
+const SK=w=>`stroke="${ink}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
+const tri=(x,y,w,h,up)=>`<path d="M${x},${y} L${x+w/2},${y+(up?-h:h)} L${x+w},${y} Z" fill="${tooth}" ${SK(3.5)}/>`;
+function skullA(){
+  let a='<rect width="900" height="510" fill="#fff"/>';
+  a+=`<path d="M300,318 L640,318 C656,322 656,346 640,356 C560,382 440,398 330,398 C255,398 212,378 210,350 C208,322 232,298 262,286 L286,262 L300,300 Z" fill="${bone}" ${SK(5)}/>`;
+  for(let x=400;x<530;x+=33)a+=tri(x,318,30,24,true);
+  a+=`<path d="M532,318 C534,300 540,282 548,262 C556,282 560,300 562,318 Z" fill="${tooth}" ${SK(3.5)}/>`;
+  for(let x=600;x<640;x+=14)a+=tri(x,318,13,11,true);
+  a+=`<path d="M120,262 C108,190 168,128 270,110 C362,96 452,118 522,158 C572,186 616,198 652,210 C672,218 676,248 660,270 L380,270 C330,284 250,298 200,298 C150,298 124,288 120,262 Z" fill="${bone}" ${SK(5)}/>`;
+  a+=`<path d="M185,165 C245,128 330,114 405,124" fill="none" ${SK(3)}/>`;
+  a+=`<path d="M290,212 C330,190 395,196 420,222 C402,256 330,262 298,242 Z" fill="${ink}"/>`;
+  a+=`<ellipse cx="478" cy="186" rx="46" ry="42" fill="${ink}"/><ellipse cx="642" cy="238" rx="11" ry="17" fill="${ink}"/>`;
+  for(let x=398;x<540;x+=36)a+=tri(x,270,33,30,false);
+  a+=`<path d="M558,270 C560,300 566,326 576,352 C584,326 590,298 592,270 Z" fill="${tooth}" ${SK(3.5)}/>`;
+  for(let x=606;x<652;x+=15)a+=tri(x,270,14,13,false);
+  a+=topPanel();
+  a+=`<path d="M790,78 C826,78 842,108 846,132 C872,150 872,222 846,240 C830,262 750,262 734,240 C708,222 708,150 734,132 C738,108 754,78 790,78 Z" fill="${bone}" ${SK(5)}/>`;
+  a+=`<ellipse cx="768" cy="130" rx="17" ry="14" fill="${ink}"/><ellipse cx="812" cy="130" rx="17" ry="14" fill="${ink}"/>`;
+  a+=`<path d="M728,160 C745,175 748,205 732,225 M852,160 C835,175 832,205 848,225" fill="none" ${SK(3)}/>`;
+  return a+labels();
+}
+function skullB(){
+  let b='<rect width="900" height="510" fill="#fff"/>';
+  b+=`<path d="M220,318 L400,318 L480,312 C560,302 640,300 690,302 C702,310 698,326 682,331 C600,341 520,346 462,350 C422,382 380,422 300,430 C238,435 188,410 184,360 C182,334 198,319 220,318 Z" fill="${bone}" ${SK(5)}/>`;
+  for(let x=232;x<400;x+=28)b+=`<rect x="${x}" y="296" width="26" height="22" fill="${tooth}" ${SK(3.5)}/><path d="M${x+4},301 q5,5 9,0 q5,5 9,0" fill="none" stroke="${ink}" stroke-width="2"/>`;
+  b+=tri(656,302,12,12,true)+tri(670,302,12,12,true);
+  b+=`<path d="M110,230 C100,160 150,110 240,104 C300,100 340,118 380,138 L640,190 C680,198 700,214 700,234 C700,250 690,258 675,258 L600,258 C560,258 520,262 480,268 L400,272 L230,272 C170,272 115,262 110,230 Z" fill="${bone}" ${SK(5)}/>`;
+  b+=`<circle cx="262" cy="160" r="44" fill="none" ${SK(4)}/><circle cx="262" cy="160" r="36" fill="${ink}"/>`;
+  b+=`<path d="M320,205 C360,215 390,235 400,255" fill="none" ${SK(3)}/>`;
+  b+=`<ellipse cx="640" cy="222" rx="30" ry="10" fill="${ink}" transform="rotate(12 640 222)"/>`;
+  for(let x=232;x<400;x+=28)b+=`<rect x="${x}" y="272" width="26" height="22" fill="${tooth}" ${SK(3.5)}/><path d="M${x+4},289 q5,-5 9,0 q5,-5 9,0" fill="none" stroke="${ink}" stroke-width="2"/>`;
+  b+=`<path d="M665,258 L672,276 L680,258 Z M682,258 L688,272 L694,256 Z" fill="${tooth}" ${SK(3)}/>`;
+  b+=topPanel();
+  b+=`<path d="M790,62 C803,62 810,90 811,130 L818,180 C846,188 848,236 822,250 L758,250 C732,236 734,188 762,180 L769,130 C770,90 777,62 790,62 Z" fill="${bone}" ${SK(5)}/>`;
+  b+=`<ellipse cx="748" cy="212" rx="12" ry="18" fill="${ink}"/><ellipse cx="832" cy="212" rx="12" ry="18" fill="${ink}"/>`;
+  return b+labels();
+}
+function topPanel(){ return `<rect x="705" y="40" width="170" height="250" rx="16" fill="#F7F4EE"/>`; }
+function labels(){ return `<text x="400" y="480" font-family="Jua, sans-serif" font-size="22" fill="#7A7068" text-anchor="middle">옆에서 본 모습</text>
+<text x="790" y="322" font-family="Jua, sans-serif" font-size="21" fill="#7A7068" text-anchor="middle">위에서 본 모습</text>
+<text x="790" y="346" font-family="Jua, sans-serif" font-size="16" fill="#A39A90" text-anchor="middle">(주둥이가 위쪽)</text>`; }
+
+const CLUES = {
+  A:[ {id:'a1',x:575,y:305,r:55,t:'길고 뾰족한 송곳니가 있어요'},
+      {id:'a2',x:470,y:290,r:62,t:'어금니가 톱니처럼 날카로워요'},
+      {id:'a3',x:790,y:130,r:48,t:'위에서 보니 눈구멍이 앞을 향해 있어요'} ],
+  B:[ {id:'b1',x:315,y:295,r:72,t:'어금니가 평평하고 넓어요 (갈기 좋은 모양)'},
+      {id:'b2',x:520,y:290,r:55,t:'앞니와 어금니 사이가 넓게 비어 있어요'},
+      {id:'b3',x:790,y:212,r:55,t:'위에서 보니 눈구멍이 머리 양옆에 있어요'} ]
+};
+let m1 = { skull:'A', found:{}, dwell:null, dwellT:0, ready:false };
+function initM1(){
+  if(!m1.ready){ bindStage(); m1.ready=true; }
+  m1.found = Object.assign({}, S.m1found||{});
+  setSkull('A');
+  renderClues();
+  $('#kidQuiz').innerHTML = kidSVG();
+  if(allFound()) showQuiz(); else $('#quiz1').style.display='none';
+}
+function setSkull(k){
+  m1.skull=k;
+  $$('.tab').forEach(t=>t.classList.toggle('on', t.dataset.skull===k));
+  const art = k==='A'?skullA():skullB();
+  $('#baseSvg').innerHTML = art;
+  $('#lens').innerHTML = `<svg viewBox="0 0 900 510">${art}</svg>`;
+  drawMarks();
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>setSkull(t.dataset.skull)));
+function drawMarks(){
+  let s='';
+  CLUES[m1.skull].forEach((c,i)=>{ if(m1.found[c.id]) s+=`<circle cx="${c.x}" cy="${c.y}" r="${c.r}" fill="rgba(233,162,31,.12)" stroke="#E9A21F" stroke-width="5" stroke-dasharray="12 8"/><circle cx="${c.x+c.r*.72}" cy="${c.y-c.r*.72}" r="18" fill="#E9A21F"/><text x="${c.x+c.r*.72}" y="${c.y-c.r*.72+7}" text-anchor="middle" font-family="Jua" font-size="22" fill="#fff">${m1.skull==='A'?i+1:i+4}</text>`; });
+  $('#marks').innerHTML = s;
+}
+function renderClues(){
+  const all=[...CLUES.A.map((c,i)=>[c,'A',i+1]),...CLUES.B.map((c,i)=>[c,'B',i+4])];
+  $('#clueList').innerHTML = all.map(([c,k,n])=>`<div class="clue ${m1.found[c.id]?'found':''}"><span class="dot">${n}</span><span>${m1.found[c.id]? `<b>두개골 ${k}</b> · ${c.t}` : `두개골 ${k}의 숨은 단서`}</span></div>`).join('');
+  const cnt = Object.keys(m1.found).length;
+  $('#clueCount').textContent = `찾은 단서 ${cnt} / 6`;
+}
+function allFound(){ return [...CLUES.A,...CLUES.B].every(c=>m1.found[c.id]); }
+function bindStage(){
+  const st=$('#stage'), lens=$('#lens'), handle=$('#handle'), L=150;
+  let pressed=false;
+  function place(e){
+    const r=st.getBoundingClientRect();
+    const x=e.clientX-r.left, y=e.clientY-r.top;
+    if(x<0||y<0||x>r.width||y>r.height){ hide(); return; }
+    const touch = e.pointerType!=='mouse';
+    const cx=x, cy= touch ? y-95 : y;
+    const Z=2.1, W=r.width*Z, H=r.height*Z;
+    const svg=lens.firstElementChild; svg.setAttribute('width',W); svg.setAttribute('height',H);
+    svg.style.left=(L/2 - x*Z - 7)+'px'; svg.style.top=(L/2 - y*Z - 7)+'px';
+    lens.style.display='block'; lens.style.left=(cx-L/2)+'px'; lens.style.top=(cy-L/2)+'px';
+    handle.style.display='block'; handle.style.left=(cx+L*0.33)+'px'; handle.style.top=(cy+L*0.33)+'px'; handle.style.transform='rotate(-45deg)';
+    $('#stagehint').style.display='none';
+    check(x/r.width*900, y/r.height*510, false);
+  }
+  function hide(){ lens.style.display='none'; handle.style.display='none'; m1.dwell=null; }
+  st.addEventListener('pointermove', e=>{ if(e.pointerType==='mouse' || pressed) place(e); });
+  st.addEventListener('pointerdown', e=>{ pressed=true; st.setPointerCapture(e.pointerId); place(e); });
+  st.addEventListener('pointerup', e=>{ pressed=false; if(e.pointerType!=='mouse') hide(); });
+  st.addEventListener('pointercancel', ()=>{ pressed=false; hide(); });
+  st.addEventListener('pointerleave', e=>{ if(e.pointerType==='mouse') hide(); });
+}
+function check(sx,sy){
+  const hit = CLUES[m1.skull].find(c=>!m1.found[c.id] && Math.hypot(c.x-sx,c.y-sy) < c.r);
+  if(!hit){ m1.dwell=null; return; }
+  const now=performance.now();
+  if(m1.dwell!==hit.id){ m1.dwell=hit.id; m1.dwellT=now; return; }
+  if(now-m1.dwellT>350){ foundClue(hit); m1.dwell=null; }
+}
+function foundClue(c){
+  m1.found[c.id]=true; S.m1found=m1.found; save();
+  toast('🔍 단서 발견!'); drawMarks(); renderClues();
+  const left=CLUES[m1.skull].filter(k=>!m1.found[k.id]).length;
+  if(left===0 && !allFound()){ const other=m1.skull==='A'?'B':'A'; setTimeout(()=>toast(`두개골 ${other}도 조사해 보세요!`),1700); }
+  if(allFound()) setTimeout(showQuiz,900);
+}
+$('#hintBtn').addEventListener('click',()=>{
+  const c=CLUES[m1.skull].find(k=>!m1.found[k.id]);
+  if(!c){ toast(`두개골 ${m1.skull==='A'?'B':'A'}로 가 보세요`); return; }
+  const m=$('#marks'); const ns='http://www.w3.org/2000/svg';
+  const el=document.createElementNS(ns,'circle'); el.setAttribute('cx',c.x); el.setAttribute('cy',c.y); el.setAttribute('r',c.r+20);
+  el.setAttribute('fill','rgba(31,122,110,.18)'); m.appendChild(el); setTimeout(()=>el.remove(),1200);
+});
+const Q1 = [
+  { k:'A', q:'두개골 A의 동물은 무엇을 먹었을까요?', opts:['고기','풀'], ans:0,
+    good:'맞아요! 뾰족한 송곳니와 톱니 같은 어금니는 고기를 찢고 자르기 좋아요. 앞을 향한 눈은 사냥감까지의 거리를 재기 좋아요.',
+    bad:'다시 단서를 보세요. 송곳니와 어금니가 어떤 모양이었나요?' },
+  { k:'B', q:'두개골 B의 동물은 무엇을 먹었을까요?', opts:['고기','풀'], ans:1,
+    good:'맞아요! 평평한 어금니는 질긴 풀을 갈아 먹기 좋아요. 양옆에 있는 눈은 넓게 살펴 포식자를 빨리 알아채게 해요.',
+    bad:'다시 단서를 보세요. 어금니 윗면이 뾰족했나요, 평평했나요?' }
+];
+function showQuiz(){
+  $('#quiz1').style.display='block';
+  let h='';
+  Q1.forEach((q,i)=>{
+    h+=`<div class="q"><div class="qt">${q.q}</div><div class="opts">${q.opts.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}">${o}</button>`).join('')}</div><div class="fb" id="fb${i}"></div></div>`;
+    h+=`<div class="q"><div class="qt">그렇게 생각한 가장 중요한 단서는?</div><div class="opts">${CLUES[q.k].map((c,j)=>`<button class="opt" data-c="${i}" data-o="${j}">${c.t}</button>`).join('')}</div><div class="fb" id="fbc${i}"></div></div>`;
+  });
+  h+=`<div class="q" id="deep1" style="display:none"><div class="bubble" style="border-color:var(--teal)"><b>더 생각해 보기</b> — 이빨만으로 확실하게 말할 수 있을까요? 또 어떤 증거가 있으면 좋을까요?</div>
+  <textarea id="deepIn" rows="2" style="width:100%;margin-top:10px;font-size:18px;border:2px solid var(--line);border-radius:14px;padding:10px;font-family:'Jua';font-weight:400;background:var(--paper)" placeholder="예) 다리뼈를 보면 빨리 달렸는지 알 수 있을 것 같다."></textarea>
+  <div class="center" style="margin-top:12px"><button class="btn amber" id="m1done">미션 ① 해결!</button></div></div>`;
+  $('#quizBody').innerHTML=h;
+  const st={a:[false,false],c:[false,false]};
+  $$('#quizBody [data-q]').forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.q, o=+b.dataset.o, q=Q1[i], fb=$('#fb'+i);
+    $$(`#quizBody [data-q="${i}"]`).forEach(x=>x.classList.remove('sel','wrong'));
+    const ok=o===q.ans; b.classList.add(ok?'sel':'wrong');
+    fb.className='fb on '+(ok?'good':'bad'); fb.textContent=ok?q.good:q.bad; st.a[i]=ok; upd();
+  }));
+  $$('#quizBody [data-c]').forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.c; $$(`#quizBody [data-c="${i}"]`).forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+    const fb=$('#fbc'+i); fb.className='fb on good'; fb.textContent='좋은 증거예요! 탐정은 "왜 그렇게 생각했는지"를 꼭 말할 수 있어야 해요.'; st.c[i]=true; upd();
+  }));
+  function upd(){ if(st.a.every(Boolean)&&st.c.every(Boolean)){ $('#deep1').style.display='block'; } }
+  $('#quizBody').onclick=(e=>{ if(e.target.id==='m1done'){ S.done.m1=true; save(); confetti(); toast('미션 ① 해결 완료!'); setTimeout(()=>go('home'),1300);} });
+  $('#quiz1').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- mission 2 ---------- */
+function dino(spike){ // spike: 'none' | 'nose' | 'thumb' | 'spots'
+  let s=`<svg viewBox="0 0 520 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+  <rect width="520" height="330" fill="#FBF7EF" rx="18"/>
+  <path d="M40,190 C90,170 150,150 200,140 C240,120 300,105 340,110 C372,95 392,70 410,60 C432,50 470,56 486,72 C494,82 488,94 474,96 C452,98 436,104 424,118 C412,140 398,160 392,182 C386,210 376,222 360,228 L372,288 L346,290 L336,236 C300,244 262,246 236,240 L240,292 L212,294 L206,236 C170,226 110,214 40,190 Z" fill="${bone}" ${SK(5)}/>
+  <path d="M378,160 C392,180 396,196 392,210 L400,232" fill="none" ${SK(5)}/>
+  <circle cx="452" cy="74" r="5" fill="${ink}"/>`;
+  const nose=`<path d="M466,60 L474,30 L482,62 Z" fill="${tooth}" ${SK(4)}/>`;
+  const thumb=`<path d="M398,228 L420,212 L404,238 Z" fill="${tooth}" ${SK(4)}/>`;
+  if(spike==='nose') s+=nose;
+  if(spike==='thumb') s+=thumb;
+  if(spike==='spots'){
+    s+=`<g class="spot" data-spot="nose"><circle class="ring" cx="474" cy="52" r="16" fill="none" stroke="#D2583F" stroke-width="4"/><circle cx="474" cy="52" r="15" fill="#D2583F" opacity=".85"/><text x="474" y="58" text-anchor="middle" font-family="Jua" font-size="18" fill="#fff">1</text><text x="474" y="22" text-anchor="middle" font-family="Jua" font-size="18" fill="${ink}">코 위</text></g>`;
+    s+=`<g class="spot" data-spot="thumb"><circle class="ring" cx="410" cy="226" r="16" fill="none" stroke="#1F7A6E" stroke-width="4"/><circle cx="410" cy="226" r="15" fill="#1F7A6E" opacity=".85"/><text x="410" y="232" text-anchor="middle" font-family="Jua" font-size="18" fill="#fff">2</text><text x="452" y="262" text-anchor="middle" font-family="Jua" font-size="18" fill="${ink}">앞발 엄지</text></g>`;
+  }
+  return s+'</svg>';
+}
+function spikeBone(st='width:160px;height:auto'){ return `<svg viewBox="0 0 220 160" style="${st}"><rect width="220" height="160" rx="16" fill="#FBF7EF"/><path d="M60,128 C66,96 90,50 150,26 C130,70 128,104 140,128 Z" fill="${tooth}" ${SK(5)}/><text x="110" y="152" text-anchor="middle" font-family="Jua" font-size="15" fill="#7A7068">발견된 뾰족한 뼈</text></svg>`; }
+function bronto(){ return `<svg viewBox="0 0 520 300" style="width:100%;height:auto"><rect width="520" height="300" rx="18" fill="#FBF7EF"/>
+  <path d="M40,200 C100,190 150,170 190,150 C230,120 300,118 340,140 C370,110 390,70 410,54 C420,46 432,50 430,62 C420,90 404,130 396,170 C392,196 380,212 360,218 L366,272 L340,272 L334,222 C290,230 250,230 224,222 L226,272 L200,272 L198,218 C150,214 90,212 40,200 Z" fill="${bone}" ${SK(5)}/>
+  <g><path d="M396,40 C410,26 446,26 462,40 C472,50 468,62 454,64 L404,64 C392,60 388,48 396,40 Z" fill="#FBE4DD" stroke="#D2583F" stroke-width="5" stroke-dasharray="10 6"/><text x="430" y="18" text-anchor="middle" font-family="Jua" font-size="17" fill="#D2583F">다른 공룡의 머리?!</text></g>
+  </svg>`; }
+const M2 = [
+  { render:()=>`<div class="story"><div class="art">${dino('spots')}</div><div>
+      <h2>사건: 뾰족한 뼈 하나</h2>
+      <div class="row" style="gap:12px;align-items:flex-start">${spikeBone()}<div class="txt">이구아노돈이라는 공룡의 화석 사이에서 <b>뾰족한 뼈</b> 하나가 나왔어요.</div></div>
+      <div class="txt" style="margin-top:10px"><b>탐정의 추리!</b> 이 뼈는 몸의 어디에 붙어 있었을까요? 그림의 ①, ② 중에서 눌러 보세요.</div>
+      <div class="fb" id="m2fb1"></div></div></div>`,
+    bind:()=>{ $$('#m2body .spot').forEach(g=>g.addEventListener('click',()=>{ m2.choice=g.dataset.spot; const fb=$('#m2fb1'); fb.className='fb on good'; fb.textContent=`우리 탐정단의 추리: ${m2.choice==='nose'?'① 코 위의 뿔':'② 앞발 엄지'}! 과학자들은 어떻게 생각했을까요?`; nextBtn(true); })); },
+    need:true },
+  { render:()=>`<div class="story"><div class="art">${dino('nose')}</div><div>
+      <span class="year">1800년대 초</span><h2>처음 연구한 과학자들의 생각</h2>
+      <div class="txt">뼈가 몇 개밖에 없었던 과학자들은 이 뼈를 <b style="color:var(--coral)">코 위의 뿔</b>로 복원했어요. 코뿔소처럼 말이에요!</div>
+      <div class="bubble" style="margin-top:14px;font-size:17px">우리 탐정단은 <b>${m2.choice==='nose'?'① 코 위':'② 앞발 엄지'}</b>를 골랐어요. ${m2.choice==='nose'?'옛날 과학자들과 같은 생각이네요!':'옛날 과학자들과 다른 생각이네요!'}</div></div></div>` },
+  { render:()=>`<div class="story"><div class="art">${dino('thumb')}</div><div>
+      <span class="year">1878년</span><h2>새로운 증거 발견!</h2>
+      <div class="txt">벨기에의 한 탄광에서 거의 온전한 이구아노돈 골격이 <b>여러 구</b> 발견됐어요. 그 결과 이 뼈는 뿔이 아니라 <b style="color:var(--teal)">앞발의 엄지 뼈</b>였다는 것이 밝혀졌어요.</div>
+      <div class="q"><div class="qt">무엇이 과학자의 생각을 바꾸었나요?</div><div class="opts">
+        <button class="opt" data-a="0">새로운 증거 (온전한 골격)</button><button class="opt" data-a="1">과학자의 기분이 바뀌어서</button><button class="opt" data-a="2">투표로 정해서</button></div>
+        <div class="fb" id="m2fb3"></div></div></div></div>`,
+    bind:()=>{ $$('#m2body [data-a]').forEach(b=>b.addEventListener('click',()=>{ $$('#m2body [data-a]').forEach(x=>x.classList.remove('sel','wrong')); const ok=b.dataset.a==='0'; b.classList.add(ok?'sel':'wrong'); const fb=$('#m2fb3'); fb.className='fb on '+(ok?'good':'bad'); fb.textContent= ok?'맞아요! 과학자는 새로운 증거가 나오면 생각을 고쳐요. 이것이 과학이 발전하는 방법이에요.':'다시 생각해 보세요. 과학자는 무엇을 보고 생각을 바꿀까요?'; if(ok) nextBtn(true); })); },
+    need:true },
+  { render:()=>`<div class="story"><div class="art">${bronto()}</div><div>
+      <h2>또 하나의 사건: 박물관의 엉터리 공룡</h2>
+      <div class="txt">브론토사우루스(아파토사우루스)의 골격이 처음 전시됐을 때, 머리는 <b style="color:var(--coral)">다른 공룡의 머리</b>였어요. 제 머리를 찾기까지 오랜 시간이 걸렸어요.</div>
+      <div class="q"><div class="qt">게임에서는 색이 달라 엉터리 공룡을 바로 알았는데, 과학자들은 왜 몰랐을까요? (여러 개 골라도 돼요)</div><div class="opts">
+        <button class="opt" data-r>머리뼈가 몸과 떨어져 있었다</button><button class="opt" data-r>비교할 온전한 골격이 없었다</button><button class="opt" data-r>비슷한 공룡의 머리를 빌려 썼다</button><button class="opt" data-r>진짜 뼈에는 색깔 표시가 없다</button></div>
+        <div class="fb" id="m2fb4"></div></div></div></div>`,
+    bind:()=>{ $$('#m2body [data-r]').forEach(b=>b.addEventListener('click',()=>{ b.classList.toggle('sel'); const n=$$('#m2body [data-r].sel').length; const fb=$('#m2fb4'); if(n){ fb.className='fb on good'; fb.textContent='모두 가능한 이유예요! 실제 발굴지에서는 뼈가 흩어져 있고, 어떤 뼈가 누구 것인지 알려 주는 표시도 없어요.'; nextBtn(true);} })); },
+    need:true },
+  { render:()=>`<div class="card"><div class="row" style="align-items:flex-start"><div style="width:110px;flex:none">${kidSVG()}</div><div style="flex:1">
+      <h2 style="font-size:28px;color:var(--soil);margin-bottom:6px">진짜 탐정은 이렇게 말해요</h2>
+      <div class="muted" style="font-size:17px;margin-bottom:12px">과학자(탐정)다운 말에는 ○, 아닌 말에는 ✕를 눌러 보세요.</div>
+      <div class="ox">${OX.map((o,i)=>`<div class="oxrow"><span>${o.t}</span><button class="oxb o" data-ox="${i}" data-v="o">○</button><button class="oxb x" data-ox="${i}" data-v="x">✕</button></div>`).join('')}</div>
+      <div class="fb" id="m2fb5"></div></div></div></div>`,
+    bind:()=>{ const pick={}; $$('#m2body [data-ox]').forEach(b=>b.addEventListener('click',()=>{ const i=b.dataset.ox; $$(`#m2body [data-ox="${i}"]`).forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); pick[i]=b.dataset.v;
+      if(Object.keys(pick).length===OX.length){ const wrong=OX.filter((o,k)=>pick[k]!==o.a).length; const fb=$('#m2fb5');
+        if(!wrong){ fb.className='fb on good'; fb.innerHTML='완벽해요! 탐정은 <b>"지금까지의 증거로는 ~라고 본다"</b>처럼 근거와 함께 조심스럽게 말해요.'; nextBtn(true,'미션 ② 해결!'); }
+        else { fb.className='fb on bad'; fb.textContent=`${wrong}개를 다시 생각해 보세요. "확실히", "100%"라는 말이 들어가면 어떨까요?`; nextBtn(false); } } })); },
+    need:true, last:true }
+];
+const OX=[ {t:'"이 공룡은 확실히 코에 뿔이 있었다."',a:'x'}, {t:'"지금까지의 증거로는 엄지에 뾰족한 뼈가 있었다고 본다."',a:'o'}, {t:'"뼈 하나만 봤지만 내 추리는 100% 맞다."',a:'x'}, {t:'"새로운 증거가 나오면 생각이 바뀔 수 있다."',a:'o'} ];
+let m2={step:0,choice:null};
+function initM2(){ m2={step:0,choice:null}; renderM2(); }
+function renderM2(){
+  const st=M2[m2.step];
+  $('#m2body').innerHTML = st.render() + `<div class="center" style="margin-top:18px"><button class="btn ${st.last?'amber':''}" id="m2next" ${st.need?'disabled':''}>${st.last?'미션 ② 해결!':'다음 →'}</button></div>`;
+  if(st.bind) st.bind();
+  $('#m2next').addEventListener('click',()=>{
+    if(st.last){ S.done.m2=true; save(); confetti(); toast('미션 ② 해결 완료!'); setTimeout(()=>go('home'),1300); return; }
+    m2.step++; renderM2(); window.scrollTo(0,0);
+  });
+  $('#m2dots').innerHTML = M2.map((_,i)=>`<i class="${i===m2.step?'on':''}"></i>`).join('');
+}
+function nextBtn(on){ const b=$('#m2next'); if(b) b.disabled=!on; }
+
+/* ---------- mission 3: bone drawings ---------- */
+// outline trick: draw every shape once thick in ink, then again in bone color
+function art(shapes, extra=''){
+  const out=shapes.map(s=>s.replace('/>',` fill="${ink}" stroke="${ink}" stroke-width="9" stroke-linejoin="round"/>`)).join('');
+  const fill=shapes.map(s=>s.replace('/>',` fill="${bone}"/>`)).join('');
+  return `<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="220" fill="#FBF7EF"/>${out}${fill}${extra}</svg>`;
+}
+function lb(x1,y1,x2,y2,w){ // long bone
+  const L=Math.hypot(x2-x1,y2-y1), a=Math.atan2(y2-y1,x2-x1)*180/Math.PI, k=w*0.62;
+  const t=`transform="translate(${x1},${y1}) rotate(${a})"`;
+  return [`<rect x="0" y="${-w/2}" width="${L}" height="${w}" rx="${w/2}" ${t}/>`,
+          `<circle cx="${k*0.3}" cy="${-w*0.42}" r="${k}" ${t}/>`,`<circle cx="${k*0.3}" cy="${w*0.42}" r="${k}" ${t}/>`,
+          `<circle cx="${L-k*0.3}" cy="${-w*0.42}" r="${k}" ${t}/>`,`<circle cx="${L-k*0.3}" cy="${w*0.42}" r="${k}" ${t}/>`];
+}
+function claw(x,y,a,s){ return `<path d="M0,-${s*0.35} C${s*0.7},-${s*0.4} ${s*1.1},${s*0.1} ${s*1.2},${s*0.6} C${s*0.8},${s*0.25} ${s*0.4},${s*0.3} 0,${s*0.35} Z" transform="translate(${x},${y}) rotate(${a})"/>`; }
+function spine(x,y,n,w,h,gap,shrink=1){ let r=[],cx=x,cw=w,ch=h; for(let i=0;i<n;i++){ r.push(`<rect x="${cx}" y="${y-ch/2}" width="${cw}" height="${ch}" rx="${Math.min(cw,ch)*0.35}"/>`); cx+=cw+gap; cw*=shrink; ch*=shrink; } return r; }
+function ribs(cx,cy,n,sp,len){ let r=[]; for(let i=0;i<n;i++){ const x=cx+i*sp; r.push(`<path d="M${x},${cy} C${x-8},${cy+len*0.5} ${x-2},${cy+len} ${x+10},${cy+len+6} L${x+14},${cy+len} C${x+4},${cy+len*0.9} ${x+2},${cy+len*0.5} ${x+8},${cy} Z"/>`);} return r; }
+const B = {
+  bat:[
+    ()=>art([...spine(40,70,11,16,14,4), ...ribs(64,78,7,26,70)]),
+    ()=>art([...lb(70,60,150,110,11), ...lb(150,110,230,120,9)], [0,1,2,3,4].map(i=>`<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(232,108+i*6,70,16)}</g>`).join('')),
+    ()=>`<svg viewBox="0 0 300 220"><rect width="300" height="220" fill="#FBF7EF"/>
+      <path d="M60,120 C55,80 90,60 130,58 C170,56 200,70 230,96 C248,108 250,122 238,130 L110,138 C85,140 62,136 60,120 Z" fill="${bone}" ${SK(5)}/>
+      <ellipse cx="190" cy="98" rx="16" ry="14" fill="${ink}"/><ellipse cx="236" cy="116" rx="5" ry="7" fill="${ink}"/>
+      ${[130,146,162,178,194,210].map((x,i)=>tri(x,132,14,i===4?26:14,false)).join('')}
+      <path d="M100,150 L232,142 C240,146 238,158 228,160 C190,168 140,172 110,170 C92,168 90,152 100,150 Z" fill="${bone}" ${SK(5)}/>
+      ${[132,150,168,186,204].map((x,i)=>tri(x,148,14,i===3?22:12,true)).join('')}</svg>`,
+    ()=>art([...lb(30,190,90,150,12), ...lb(90,150,150,110,9), ...lb(150,110,285,16,5), ...lb(150,110,290,70,5), ...lb(150,110,270,150,5), ...lb(150,110,215,200,5)], `<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(150,104,-80,14)}</g>`)
+  ],
+  mole:[
+    ()=>art([...spine(30,80,12,16,15,4), ...ribs(62,88,7,26,56)]),
+    ()=>art([...lb(90,80,140,120,11), ...lb(140,120,190,130,9)], [0,1,2,3,4].map(i=>`<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(192,120+i*5,20,10)}</g>`).join('')),
+    ()=>`<svg viewBox="0 0 300 220"><rect width="300" height="220" fill="#FBF7EF"/>
+      <path d="M40,120 C36,86 70,70 110,72 C160,74 220,92 270,112 C280,116 280,124 270,126 L110,140 C70,144 44,138 40,120 Z" fill="${bone}" ${SK(5)}/>
+      <ellipse cx="150" cy="100" rx="6" ry="5" fill="${ink}"/>
+      ${[120,134,148,162,176,190,204,218,232,246].map(x=>tri(x,128,11,11,false)).join('')}
+      <path d="M86,150 L262,136 C270,140 268,150 258,152 C200,160 140,166 100,166 C84,166 80,152 86,150 Z" fill="${bone}" ${SK(5)}/>
+      ${[128,142,156,170,184,198,212,226].map(x=>tri(x,146,11,10,true)).join('')}</svg>`,
+    ()=>art([...lb(40,70,110,92,26), `<ellipse cx="170" cy="120" rx="58" ry="46"/>`], [0,1,2,3,4].map(i=>`<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(214+Math.sin((i-2)*0.45)*14,120+(i-2)*20,(i-2)*14,26)}</g>`).join('') + [0,1,2,3].map(i=>`<path d="M${150+i*14},92 L${150+i*14},148" stroke="${ink}" stroke-width="2" opacity=".35"/>`).join(''))
+  ],
+  kangaroo:[
+    ()=>art([...lb(50,60,130,110,12), ...lb(130,110,200,140,10)], [0,1,2,3,4].map(i=>`<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(202,128+i*6,30,14)}</g>`).join('')),
+    ()=>`<svg viewBox="0 0 300 220"><rect width="300" height="220" fill="#FBF7EF"/>
+      <path d="M40,116 C34,76 70,56 116,56 C150,56 176,66 200,80 L268,106 C280,112 280,126 266,128 L230,130 L120,136 C74,138 44,134 40,116 Z" fill="${bone}" ${SK(5)}/>
+      <circle cx="112" cy="90" r="20" fill="${ink}"/><ellipse cx="256" cy="112" rx="10" ry="6" fill="${ink}"/>
+      ${[92,112,132,152].map(x=>`<rect x="${x}" y="132" width="18" height="16" fill="${tooth}" ${SK(3)}/>`).join('')}
+      ${tri(250,128,10,14,false)}${tri(262,127,10,12,false)}
+      <path d="M70,156 L250,146 C262,150 260,160 250,162 C190,170 130,178 90,178 C66,178 62,158 70,156 Z" fill="${bone}" ${SK(5)}/>
+      ${[92,112,132,152].map(x=>`<rect x="${x}" y="140" width="18" height="14" fill="${tooth}" ${SK(3)}/>`).join('')}
+      <path d="M244,150 L270,138 L272,146 Z" fill="${tooth}" ${SK(3)}/></svg>`,
+    ()=>{ let r=[],x=20,w=34,h=30; const pts=[]; for(let i=0;i<11;i++){ const cx=x, cy=60+i*i*1.1; r.push(`<rect x="${cx}" y="${cy-h/2}" width="${w}" height="${h}" rx="${h*0.3}" transform="rotate(${i*2.5} ${cx+w/2} ${cy})"/>`); x+=w+3; w*=0.9; h*=0.9; } return art(r); },
+    ()=>art([...lb(40,30,100,90,20), ...lb(100,90,110,190,13), ...lb(110,190,290,200,11)], `<g fill="${bone}" stroke="${ink}" stroke-width="4">${claw(288,196,10,14)}</g>`)
+  ]
+};
+const CASES = {
+  bat:{ n:1, title:'동굴에서 발견된 뼈', where:'어두운 동굴 천장 아래 바닥', ans:'박쥐',
+    ev:[ {t:'척추와 갈비뼈', size:'길이 약 2cm', hint:'크기가 얼마나 작은지 살펴보세요. 몸통은 어떤 모양이었을까요?'},
+         {t:'뒷다리', size:'길이 약 2cm', hint:'다리가 굵은가요, 가는가요? 발끝의 굽은 발톱은 어디에 쓰였을까요?'},
+         {t:'두개골', size:'길이 약 2cm', hint:'이빨의 모양을 보세요. 무엇을 먹었을까요? (미션 ①을 떠올려 봐요)'},
+         {t:'앞다리', size:'가장 긴 뼈 약 6cm', hint:'몸에 비해 앞다리 뼈의 길이가 어떤가요? 가늘고 긴 뼈들이 부채처럼 퍼져 있어요.'} ],
+    explain:'<b>결정적 단서: 아주 길게 늘어난 앞다리 손가락뼈!</b><br>박쥐는 길쭉한 손가락뼈 사이에 얇은 피부막이 붙어 날개가 돼요. 스스로 날 수 있는 유일한 포유류예요. 작고 뾰족한 이빨로 곤충을 잡아먹는 박쥐가 많고, 굽은 뒷발톱으로 동굴 천장에 거꾸로 매달려 쉬어요.' },
+  mole:{ n:2, title:'정원 흙 속에서 발견된 뼈', where:'정원의 촉촉한 흙 속 굴', ans:'두더지',
+    ev:[ {t:'척추와 갈비뼈', size:'길이 약 8cm', hint:'몸통의 크기와 길이를 보세요. 어떤 몸매였을까요?'},
+         {t:'뒷다리', size:'길이 약 2cm', hint:'몸통에 비해 뒷다리가 긴가요, 짧은가요?'},
+         {t:'두개골', size:'길이 약 3.5cm', hint:'주둥이 모양과 눈구멍의 크기를 보세요. 눈이 중요한 동물이었을까요?'},
+         {t:'앞발', size:'폭 약 2cm', hint:'앞발이 넓적하고 발톱이 굵어요. 이런 앞발은 무엇을 하기에 좋을까요?'} ],
+    explain:'<b>결정적 단서: 짧고 넓은 삽 모양의 앞발!</b><br>두더지는 넓적한 앞발과 굵은 발톱으로 흙을 파며 거의 평생 땅속 굴에서 지내요. 어두운 땅속에서는 눈이 거의 필요 없어서 눈이 아주 작아요. 작고 뾰족한 이빨로 지렁이와 곤충 애벌레를 먹어요.' },
+  kangaroo:{ n:3, title:'넓은 초원에서 발견된 뼈 (보너스)', where:'풀이 많은 넓은 초원', ans:'캥거루',
+    ev:[ {t:'앞다리', size:'길이 약 25cm', hint:'앞다리의 길이와 굵기를 기억해 두세요. 나중에 다른 뼈와 비교해 봐요.'},
+         {t:'두개골', size:'길이 약 20cm', hint:'어금니의 윗면을 보세요. 고기를 먹었을까요, 풀을 먹었을까요?'},
+         {t:'꼬리뼈', size:'길이 약 90cm', hint:'꼬리가 굵고 길어요. 이렇게 튼튼한 꼬리는 어디에 쓰였을까요?'},
+         {t:'뒷다리', size:'길이 약 90cm', hint:'앞다리(약 25cm)와 비교해 보세요! 발뼈도 아주 길어요.'} ],
+    explain:'<b>결정적 단서: 앞다리보다 훨씬 긴 뒷다리와 굵은 꼬리!</b><br>캥거루는 길고 힘센 뒷다리로 껑충껑충 뛰고, 굵은 꼬리로 균형을 잡아요. 천천히 움직일 때는 꼬리를 다리처럼 짚기도 해요. 풀을 먹는 초식 동물이라 어금니가 평평해요.' }
+};
+function caseState(id){ if(!S.cases[id]) S.cases[id]={step:0,guesses:[],conf:[],report:{},revealed:false}; return S.cases[id]; }
+let cur=null;
+function renderCases(){
+  $('#kidCase').innerHTML=kidSVG();
+  $('#caseList').innerHTML = Object.entries(CASES).map(([id,c])=>{ const s=S.cases[id]; const st= s&&s.revealed?'해결 완료!': s&&s.guesses.length? `증거 ${Math.min(s.guesses.length+1,4)} / 4 조사 중`:'아직 열지 않음';
+    return `<button class="case" data-case="${id}"><div class="st">${st}</div><h3>사건 파일 #${c.n}</h3><div class="jua" style="font-size:19px;color:var(--soil)">${c.title}</div><p>발견 장소: ${c.where}</p><div style="margin-top:10px">${B[id][0]().replace('<svg','<svg style="width:100%;border-radius:12px;opacity:.9"')}</div></button>`; }).join('');
+  $$('#caseList [data-case]').forEach(b=>b.addEventListener('click',()=>openCase(b.dataset.case)));
+}
+function openCase(id){
+  cur=id; const s=caseState(id); save();
+  if(s.revealed){ showReveal(); return; }
+  if(s.guesses.length>=4){ openReport(); return; }
+  go('m3b'); renderBoard();
+}
+function renderBoard(){
+  const c=CASES[cur], s=caseState(cur), i=s.guesses.length;
+  $('#caseTitle').textContent=`사건 파일 #${c.n} · ${c.title}`;
+  $('#evTitle').textContent=`증거 #${i+1} · ${c.ev[i].t}`;
+  $('#evSize').textContent=c.ev[i].size;
+  $('#evArt').innerHTML=B[cur][i]();
+  $('#evHint').textContent='🔍 '+c.ev[i].hint;
+  $('#thumbs').innerHTML=[0,1,2,3].map(k=> k<=i ? `<button class="thumb ${k===i?'cur':''}" data-th="${k}">${B[cur][k]()}</button>` : `<div class="thumb locked">?</div>`).join('');
+  $$('#thumbs [data-th]').forEach(t=>t.addEventListener('click',()=>{ const k=+t.dataset.th; $('#evArt').innerHTML=B[cur][k](); $('#evTitle').textContent=`증거 #${k+1} · ${c.ev[k].t}`; $('#evSize').textContent=c.ev[k].size; $('#evHint').textContent='🔍 '+c.ev[k].hint; }));
+  $('#guessLab').textContent = i===3 ? '최종 추리: 이 동물은 무엇이고, 어떻게 살았을까?' : '지금 우리 추리: 이 동물은?';
+  $('#guessIn').value = s.guesses[i-1] ? '' : '';
+  $('#guessIn').placeholder = i===0 ? '예) 작은 동물 같다. 뼈가 아주 작아서.' : '앞의 추리를 바꿔도, 그대로 둬도 좋아요. 이유도 함께!';
+  $('#confIn').value = s.conf[i-1] ?? 50; $('#confV').textContent=$('#confIn').value+'%';
+  $('#nextEv').textContent = i===3 ? '최종 추리 기록하고 보고서 쓰기' : '기록하고 다음 증거 열기';
+  $('#nextEv').disabled=true;
+  $('#guessLog').innerHTML = s.guesses.map((g,k)=>`<div><b>증거 ${k+1}까지</b> · 확신도 ${s.conf[k]}%<br>${esc(g)}</div>`).join('');
+}
+$('#guessIn').addEventListener('input',()=>{ $('#nextEv').disabled = $('#guessIn').value.trim().length<2; });
+$('#confIn').addEventListener('input',()=>{ $('#confV').textContent=$('#confIn').value+'%'; });
+$('#nextEv').addEventListener('click',()=>{
+  const s=caseState(cur); s.guesses.push($('#guessIn').value.trim()); s.conf.push(+$('#confIn').value); save();
+  if(s.guesses.length>=4){ toast('최종 추리 기록 완료!'); openReport(); }
+  else { toast(`🗂️ 증거 #${s.guesses.length+1} 공개!`); renderBoard(); window.scrollTo(0,0); }
+});
+function openReport(){
+  const s=caseState(cur), r=s.report||{};
+  go('m3r');
+  $('#rClaim').value = r.claim ?? `이 동물은 ${s.guesses[3]||''}`;
+  $('#rEvid').value=r.evid||''; $('#rReason').value=r.reason||''; $('#rSure').value=r.sure||''; $('#rMore').value=r.more||'';
+}
+['rClaim','rEvid','rReason','rSure','rMore'].forEach(id=>$('#'+id).addEventListener('input',()=>{ const s=caseState(cur); s.report={claim:$('#rClaim').value,evid:$('#rEvid').value,reason:$('#rReason').value,sure:$('#rSure').value,more:$('#rMore').value}; save(); }));
+$('#toPresent').addEventListener('click',()=>{
+  const s=caseState(cur), r=s.report||{};
+  if(!(r.claim&&r.evid&&r.reason)){ toast('주장·증거·근거를 모두 채워 주세요'); return; }
+  go('m3p');
+  $('#pCase').textContent=`사건 파일 #${CASES[cur].n} · ${CASES[cur].title}`;
+  $('#pTeam').textContent=(S.team||'우리 탐정단')+'의 복원 보고서';
+  $('#pClaim').textContent=r.claim; $('#pEvid').textContent=r.evid; $('#pReason').textContent=r.reason; $('#pSure').textContent=r.sure||'-';
+});
+$('#toReveal').addEventListener('click',()=>{ const s=caseState(cur); s.revealed=true; S.done.m3=true; save(); showReveal(); confetti(); });
+function showReveal(){
+  const c=CASES[cur], s=caseState(cur);
+  go('m3v');
+  $('#vName').textContent=c.ans+'!';
+  $('#vCards').innerHTML=B[cur].map(f=>f()).join('');
+  $('#vExplain').innerHTML=c.explain;
+  // chart
+  const W=640,H=240,pl=50,pb=46,pt=20,bw=70, gx=(W-pl-20)/4;
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;font-family:Jua,sans-serif">`;
+  [0,50,100].forEach(v=>{ const y=pt+(H-pt-pb)*(1-v/100); g+=`<line x1="${pl}" x2="${W-10}" y1="${y}" y2="${y}" stroke="#EEE6D8" stroke-width="1.5"/><text x="${pl-8}" y="${y+5}" text-anchor="end" font-size="13" fill="#7A7068">${v}%</text>`; });
+  s.conf.forEach((v,k)=>{ const x=pl+gx*k+(gx-bw)/2, h=(H-pt-pb)*v/100, y=H-pb-h;
+    g+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h,2)}" rx="8" fill="${k===3?'#E9A21F':'#1F7A6E'}"/><text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="15" fill="#3B2A20">${v}%</text><text x="${x+bw/2}" y="${H-pb+20}" text-anchor="middle" font-size="14" fill="#3B2A20">증거 ${k+1}까지</text>`; });
+  g+='</svg>';
+  g+=`<div style="margin-top:8px">${s.guesses.map((x,k)=>`<div style="padding:6px 0;border-top:1px dashed var(--line);font-size:16px"><b>증거 ${k+1}까지</b> · ${esc(x)}</div>`).join('')}</div>`;
+  $('#vChart').innerHTML=g;
+  const up = s.conf[3] > s.conf[0];
+  $('#vKid').innerHTML = `<b>탐정의 한마디</b> — ${up?'증거가 늘어날수록 확신도가 올라갔네요!':'증거가 늘어났는데도 확신도가 그대로거나 내려갔네요. 그것도 정직한 탐정의 모습이에요!'} 우리 추리에서 <b>가장 결정적이었던 증거</b>는 몇 번이었나요? 뼈만으로는 알 수 <b>없는</b> 것(털 색, 울음소리 등)도 생각해 보세요.`;
+}
+
+/* ---------- home ---------- */
+function renderHome(){
+  $('#kidHome').innerHTML=kidSVG();
+  $('#ico1').innerHTML=`<svg viewBox="0 0 900 510" style="height:90px">${skullA().replace(/<text[\s\S]*?<\/text>/g,'')}</svg>`;
+  $('#ico2').innerHTML=spikeBone('height:90px;width:auto').replace(/<text[\s\S]*?<\/text>/,'');
+  $('#ico3').innerHTML=`<div style="height:90px">${B.bat[3]().replace('<svg','<svg style="height:90px;border-radius:12px"')}</div>`;
+  $('#teamName').value=S.team||'';
+  ['m1','m2','m3'].forEach((m,i)=>$('#mc'+(i+1)).classList.toggle('done', !!S.done[m]));
+  $$('.teamTag').forEach(t=>{ t.textContent = S.team ? '🔍 '+S.team : '탐정단 이름을 등록해 주세요'; });
+  if(S.done.m1&&S.done.m2&&S.done.m3 && !S._cele){ S._cele=true; save(); setTimeout(()=>{confetti(); toast('모든 사건 해결! 최고의 탐정단 🏅');},400); }
+}
+$('#saveTeam').addEventListener('click',()=>{ const v=$('#teamName').value.trim(); if(!v){ toast('탐정단 이름을 적어 주세요'); return; } S.team=v; save(); renderHome(); toast(`${v} 탐정단 등록 완료!`); });
+let resetArm=0;
+$('#resetAll').addEventListener('click',()=>{
+  if(Date.now()-resetArm<3000){ S=fresh(); save(); m1.found={}; renderHome(); toast('처음 상태로 돌아갔어요'); $('#resetAll').textContent='처음부터 다시 하기 (선생님용)'; resetArm=0; }
+  else { resetArm=Date.now(); $('#resetAll').textContent='한 번 더 누르면 모든 기록이 지워져요'; setTimeout(()=>{$('#resetAll').textContent='처음부터 다시 하기 (선생님용)';},3000); }
+});
+renderHome();
+</script>
+</body>
+</html>
